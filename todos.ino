@@ -24,6 +24,7 @@ void setup() {
   pinMode(led, OUTPUT); //Configura LED como saída
   pinMode(micro, INPUT); //Configura o microfone como entrada
   digitalWrite(led, LOW); //Começa com o LED apagado
+  attachInterrupt(digitalPinToInterrupt(micro), funMicro, RISING);
   
   //Sensor de luz com LDR
   pinMode(ledPin,OUTPUT); //define a porta 7 como saída
@@ -40,11 +41,7 @@ void setup() {
 void loop() {
   //piscina
   valor = digitalRead(micro);//Le o pino digital
-  if (valor){
-    estado=!estado;
-    digitalWrite(led, estado);
-    delay(500);
-  }
+  
 
   //Sensor de luz com LDR
   ///ler o valor do LDR
@@ -76,7 +73,7 @@ duration = pulseIn(echoPin, HIGH);
 distance= (duration*0.034)/2;
 
 safetyDistance = distance;
-if (safetyDistance <= 16){
+if (safetyDistance <= 18){
   digitalWrite(buzzer, HIGH);
 }
 else{
@@ -84,6 +81,15 @@ else{
 }
 
 // Prints the distance on the Serial Monitor
-Serial.print("Distancia: ");
-Serial.println(distance);
+//Serial.print("Distancia: ");
+//Serial.println(distance);
+}
+
+ICACHE_RAM_ATTR void funMicro(){
+//  if (valor){
+    Serial.println("SOM TESTANDO");
+    estado=!estado;
+    digitalWrite(led, estado);
+//    delay(500);
+//  }
 }
