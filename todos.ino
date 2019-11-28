@@ -62,7 +62,7 @@ const int buzzer = 14;
 long duration;
 int distance;
 int safetyDistance;
- 
+uint32_t print_timer;
 
 void setup() {
   // piscina
@@ -82,7 +82,6 @@ void setup() {
   Serial.begin(9600); // Starts the serial communication
 
   //aplicativo
-    //botao1="checked";
     configurarAP();
     server.on("/",pagina);
     server.on("/salvo1",altera_botao1);
@@ -95,13 +94,14 @@ void loop() {
   //aplicativo
   server.handleClient();
 
-  if (botao1=="checked"){
+  if(millis() - print_timer > 500){
+    print_timer = millis();
+     if (botao1=="checked"){
         funUltra();
         Serial.println("botão on");
     }
-  
-  //piscina
-  /*valor = digitalRead(micro);//Le o pino digital
+    //piscina
+  valor = digitalRead(micro);//Le o pino digital
   
 
   //Sensor de luz com LDR
@@ -114,10 +114,10 @@ void loop() {
  else digitalWrite(ledPin,LOW);
  
  //imprime o valor lido do LDR no monitor serial
- Serial.println(ldrValor);
+// Serial.println(ldrValor);
  //delay(100);
-*/
-
+  }
+ 
 }
 
 void funUltra(){
