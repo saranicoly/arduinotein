@@ -16,16 +16,11 @@ void pagina(){
     s+= " right: 56px;border: 2px solid #999999; border-radius: 20px;transition: all 0.3s ease-in 0s;} ";
     s+= " .entradaonoff:checked + .texto-onoff .spanonoff {margin-left: 0px;}.entradaonoff:checked + .texto-onoff .bola-onoff {right: 0px;} ";
     s+= " .teste{background-color: green;border: 2px solid black;}</style></head> ";
-    s+= " <body><h1 class=\"teste\">Botão 1 - alarme</h1><div class='onoffswitch'><form action='/salvo1' method='POST' id='formu1'> ";
+    s+= " <body><h1 class=\"teste\">Alarme:</h1><div class='onoffswitch'><form action='/salvo1' method='POST' id='formu1'> ";
     s+= " <input onclick= enviar1() name='tes1' type='checkbox' class='entradaonoff' id='onoff' "+botao1+"><label class='texto-onoff' for='onoff'><span class='spanonoff'></span> ";
-    s+= " <span class='bola-onoff'></span></label></form></div><br><h1 class=\"teste\">Botão 2</h1> ";
-    s+= " <div class='onoffswitch'><form action='/salvo2' method='POST' id='formu2'><input name='tes2' type='checkbox' class='entradaonoff' id='onoff2' onclick= enviar2() "+botao2+" > ";
-    s+= " <label class='texto-onoff' for='onoff2'><span class='spanonoff'></span> ";
-    s+= " <span class='bola-onoff'></span></label></form></div>";
+    s+= " <span class='bola-onoff'></span></label></form></div> ";
     s+= " <script type='text/javascript'>function enviar1() {document.getElementById('formu1').submit();}";
-    s+= " function enviar2() {document.getElementById('formu2').submit();}";
-    s+= "function enviar3() {document.getElementById('formu3').submit();} </script>";
-    s+= "</body></html> ";
+    s+= "</script></body></html> ";
     server.send(200,"text/html",s);
 }
 
@@ -35,26 +30,15 @@ void altera_botao1(){
     }
     else{
         botao1="";
-        funUltra();
-    }
-    pagina();
-}
-void altera_botao2(){
-    if (server.arg("tes2")=="on"){
-        botao2="checked";
-        digitalWrite(pinBotao2,LOW);
-    }
-    else{
-        botao2="";
-        digitalWrite(pinBotao2,HIGH);
     }
     pagina();
 }
 
 void configurarAP(void) {
     WiFi.mode(WIFI_AP);
+    WiFi.disconnect();
     delay(100);
-    WiFi.softAP("Esp-septo", "12345678", 10);
+    WiFi.softAP("Esp-sara", "12345678", 10);
     IPAddress subnet(255, 255, 255, 0);
     WiFi.softAPConfig (IPAddress(192, 168, 0, 65), IPAddress (192, 168, 0, 1), subnet);
 }
@@ -98,25 +82,26 @@ void setup() {
   Serial.begin(9600); // Starts the serial communication
 
   //aplicativo
-  pinMode(pinBotao1,OUTPUT);
-  pinMode(pinBotao2,OUTPUT);
-  digitalWrite(pinBotao1,HIGH);
-  digitalWrite(pinBotao2,HIGH);
+    //botao1="checked";
+    configurarAP();
+    server.on("/",pagina);
+    server.on("/salvo1",altera_botao1);
+    server.begin();
 
-  configurarAP();
-  server.on("/",pagina);
-  server.on("/salvo1",altera_botao1);
-  server.on("/salvo2",altera_botao2);
-  server.begin();
 }
 
 
 void loop() {
   //aplicativo
   server.handleClient();
+
+  if (botao1=="checked"){
+        funUltra();
+        Serial.println("botão on");
+    }
   
   //piscina
-  valor = digitalRead(micro);//Le o pino digital
+  /*valor = digitalRead(micro);//Le o pino digital
   
 
   //Sensor de luz com LDR
@@ -131,7 +116,7 @@ void loop() {
  //imprime o valor lido do LDR no monitor serial
  Serial.println(ldrValor);
  //delay(100);
-
+*/
 
 }
 
