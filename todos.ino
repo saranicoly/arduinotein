@@ -1,3 +1,4 @@
+  
 #include <ESP8266WebServer.h>
 ESP8266WebServer server(80);
 String botao1="";
@@ -44,8 +45,8 @@ void configurarAP(void) {
 }
 
 //piscina
-int led = D4; //Define led como sendo o pino 2
-int micro = D2; //Define micro como sendo o pino 3
+int led = D4; //Define led como D4
+int micro = D2; //Define micro como D2
 bool valor=false; //Variavel para leitura do microfone
 bool estado=false;  // Variável para ajudar na captação do bater de palmas
 
@@ -69,17 +70,17 @@ void setup() {
   pinMode(led, OUTPUT); //Configura LED como saída
   pinMode(micro, INPUT); //Configura o microfone como entrada
   digitalWrite(led, LOW); //Começa com o LED apagado
-  attachInterrupt(digitalPinToInterrupt(micro), funMicro, RISING);
+  attachInterrupt(digitalPinToInterrupt(micro), funMicro, RISING); //interrupção arduíno
   
   //Sensor de luz com LDR
-  pinMode(ledPin,OUTPUT); //define a porta 7 como saída
+  pinMode(ledPin,OUTPUT); //define o led como saída
   Serial.begin(9600); //Inicia a comunicação serial
 
   //ultrassom
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(trigPin, OUTPUT); // coloca trigPin como Output
+  pinMode(echoPin, INPUT); // coloca echoPin como Input
   pinMode(buzzer, OUTPUT);
-  Serial.begin(9600); // Starts the serial communication
+  Serial.begin(9600); // Inicia a comunicação serial
 
   //aplicativo
     configurarAP();
@@ -94,11 +95,10 @@ void loop() {
   //aplicativo
   server.handleClient();
 
-  if(millis() - print_timer > 500){
+  if(millis() - print_timer > 500){ //função millis (sem ela o programa todo dá erro)
     print_timer = millis();
      if (botao1=="checked"){
         funUltra();
-        Serial.println("botão on");
     }
     //piscina
   valor = digitalRead(micro);//Le o pino digital
@@ -113,9 +113,6 @@ void loop() {
  // se não, apaga o led
  else digitalWrite(ledPin,LOW);
  
- //imprime o valor lido do LDR no monitor serial
-// Serial.println(ldrValor);
- //delay(100);
   }
  
 }
@@ -134,7 +131,7 @@ digitalWrite(trigPin, LOW);
 // Reads the echoPin, returns the sound wave travel time in microseconds
 duration = pulseIn(echoPin, HIGH);
 
-// Calculating the distance
+// Calcular distância
 distance= (duration*0.034)/2;
 
 safetyDistance = distance;
@@ -147,10 +144,6 @@ else{
 }
 
 ICACHE_RAM_ATTR void funMicro(){
-//  if (valor){
-    Serial.println("SOM TESTANDO");
-    estado=!estado;
+    estado=!estado; // se estiver ligado, desliga. Se estiver desligado, liga.
     digitalWrite(led, estado);
-//    delay(500);
-//  }
-}
+    }
